@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4682B4;
+  color: white;
+}
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  width: 50%;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+</head>
+@{
+	Layout="_LayoutAdmin";
+}
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Attendance</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Attendance</a></li>
+      </ol>
+  </div>
+</div>
+<body>
+<form class="navbar-search text-right" asp-controller="Attendance" asp-action="Index">
+    <div class="container">
+      <div class="row">
+        <div class="col-11 text-left">
+        <input id="search1" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="buttonsearch" onclick="javascript:SearchEmp(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+<div class="tab" style="margin-left: 20px;width:820px;">
+  <button class="tablinks" onclick="openCity(event, 'London')" id="default">Present</button>
+  <button class="tablinks" onclick="openCity(event, 'Paris')">Absent</button>
+</div>
+
+<div id="London" class="tabcontent" style="margin-left: 20px;width:820px;">
+  <table id="customers">
+  <tr class="text-center">
+    <th width="30px">No</th>
+    <th class="text-center">Employee</th>
+  </tr>
+  @{
+    var present = ViewBag.present;
+    int counter =0;
+    foreach(var i in present)
+    {
+      counter+=1;
+      <tr onclick="location.href='/Attendance/DetailAttendance?id=@i.Id'">
+        <td class="text-center">@counter</td>
+        <td>@i.Name</td>
+      </tr>
+    }
+  }
+  </table>
+</div>
+
+<div id="Paris" class="tabcontent" style="margin-left: 20px;width:820px;">
+  <table id="customers">
+  <tr class="text-center">
+    <th width="30px">No</th>
+    <th class="text-center">Employee</th>
+  </tr>
+  @{
+    var absent = ViewBag.absent;
+    var countabsent = ViewBag.countabsent;
+    var allabsent= ViewBag.absentall;
+    int count =0;
+    for(int z=0;z<countabsent;z++)
+    {
+      foreach(var i in allabsent)
+      {
+        if(i.Id==absent[z])
+        {
+        count+=1;
+        <tr onclick="location.href='/Attendance/DetailAttendance?id=@i.Id'">
+          <td class="text-center">@count</td>
+          <td>@i.Name</td>
+        </tr>
+        }
+      }
+    }
+  }
+  </table>
+</div>
+
+<script>
+function SearchEmp(btn)
+{
+	var search = document.getElementById("search1").value;
+	location.href='/Attendance/Index?search='+search;
+}
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+document.getElementById("default").click();
+</script>
+   
+</body>
+</html> 

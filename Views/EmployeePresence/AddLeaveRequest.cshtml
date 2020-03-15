@@ -1,0 +1,33 @@
+<style>
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+} 
+</style>
+
+@{
+    Layout="LayoutEmp";
+}
+
+@{
+    var id = ViewBag.idUserLogin;
+}
+<h3>Leave Request Form</h3>
+<div class="container" style="border-radius: 5px;background-color: #f2f2f2;padding: 20px;">
+  <form asp-action="SubmitRequest" asp-controller="EmployeePresence">
+    <input id="iduser1" name="iduser" value="@id" hidden>
+    <label for="leavedate1">Leave Date</label>
+    <input type="date" id="leavedate1" name="leavedate">
+
+    <label for="reason1">Reason</label>
+    <textarea id="reason1" name="reason" placeholder="Write something.." style="height:200px"></textarea>
+
+    <input class="btn btn-info" type="submit" value="Submit">
+  </form>
+</div>

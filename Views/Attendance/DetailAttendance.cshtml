@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4682B4;
+  color: white;
+}
+</style>
+</head>
+@{
+	Layout="_LayoutAdmin";
+}
+@{
+    var name = ViewBag.name;
+    string nameDetailEmp="";
+    foreach(var i in name)
+    {
+        nameDetailEmp=i.Name;
+    }
+}
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Detail Attendance @nameDetailEmp</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Attendance / Detail</a></li>
+      </ol>
+  </div>
+</div>
+<body>
+<table id="customers" style="margin-left: 30px;width:800px;">
+  <tr class="text-center">
+    <th width="30px">No</th>
+    <th>Date</th>
+    <th>Clock In</th>
+    <th>Clock Out</th>
+  </tr>
+  @{
+    var attendance = ViewBag.attendance;
+    int counter =0;
+    foreach(var i in attendance)
+    {
+      counter+=1;
+      var date = @i.PresenceIn.ToString("dddd, dd MMMM yyyy");
+      <tr>
+        <td class="text-center">@counter</td>
+        <td>@date</td>
+        <td>@i.PresenceIn.ToString("H:mm")</td>
+        <td>@i.PresenceOut.ToString("H:mm")</td>
+      </tr>
+    }
+  }
+</table>
+</body>
+</html>
+<script>
+  function SearchEmp(btn)
+  {
+    var input = document.getElementById("search").value;
+    location.href='/Attendance/Index?search='+input;
+
+  }
+</script>

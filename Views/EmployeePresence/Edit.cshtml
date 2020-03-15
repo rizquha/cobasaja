@@ -1,0 +1,72 @@
+<style>
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+} 
+</style>
+
+@{
+    Layout="LayoutEmp";
+}
+
+@{
+    var user = ViewBag.user;
+}
+<h3>Leave Request Form</h3>
+<div class="container" style="border-radius: 5px;background-color: #f2f2f2;padding: 20px;">
+  <form asp-action="SaveRequest" asp-controller="EmployeePresence">
+    <input id="iduser1" name="iduser" value="@user.Id" hidden>
+    <input id="date2" name="date1" value="@user.LeaveDate" hidden>
+    <label for="leavedate1">Leave Date</label>
+    <input type="date" id="leavedate1" name="leavedate" value="">
+
+    <label for="reason1">Reason</label>
+    <textarea id="reason1" name="reason" placeholder="@user.reason" style="height:200px" value="@user.reason"></textarea>
+    <input class="btn btn-info" type="submit" value="Submit">
+  </form>
+</div>
+<script>
+    var date = document.getElementById("date2").value;
+    date = date.split("/");
+    var year = date[2].substring(0,4);
+    var month = date[0];
+    var day = date[1];
+    console.log(year);
+    console.log(month);
+    console.log(day);
+    var dateInput;
+    if(month.length<2)
+    {
+      if(day.length<2)
+      {
+        dateInput = year+"-0"+month+"-0"+day;     
+        dateInput=dateInput.toString(); 
+      }
+      else
+      {
+        dateInput = year+"-0"+month+"-"+day;
+        dateInput=dateInput.toString(); 
+      }
+    }else
+    {
+      if(day.length<2)
+      {
+        dateInput = year+"-"+month+"-0"+day;
+        dateInput=dateInput.toString(); 
+
+      }
+      else
+      {
+        dateInput = year+"-"+month+"-"+day;
+        dateInput=dateInput.toString(); 
+      }
+    }
+    console.log(dateInput);
+    document.getElementById("leavedate1").value=dateInput;
+</script>

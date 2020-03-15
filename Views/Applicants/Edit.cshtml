@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/css/animate.css">
+
+<style>
+  div.bhoechie-tab-container{
+  z-index: 10;
+  background-color: #ffffff;
+  padding: 0 !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  border:1px solid #ddd;
+  margin-top: 20px;
+  margin-left: 50px;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  background-clip: padding-box;
+  opacity: 0.97;
+  filter: alpha(opacity=97);
+}
+div.bhoechie-tab-menu{
+  padding-right: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group{
+  margin-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group>a{
+  margin-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group>a .glyphicon,
+div.bhoechie-tab-menu div.list-group>a .fa {
+  color: #5A55A3;
+}
+div.bhoechie-tab-menu div.list-group>a:first-child{
+  border-top-right-radius: 0;
+  -moz-border-top-right-radius: 0;
+}
+div.bhoechie-tab-menu div.list-group>a:last-child{
+  border-bottom-right-radius: 0;
+  -moz-border-bottom-right-radius: 0;
+}
+div.bhoechie-tab-menu div.list-group>a.active,
+div.bhoechie-tab-menu div.list-group>a.active .glyphicon,
+div.bhoechie-tab-menu div.list-group>a.active .fa{
+  background-color: #5A55A3;
+  background-image: #5A55A3;
+  color: #ffffff;
+}
+div.bhoechie-tab-menu div.list-group>a.active:after{
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-top: -13px;
+  border-left: 0;
+  border-bottom: 13px solid transparent;
+  border-top: 13px solid transparent;
+  border-left: 10px solid #5A55A3;
+}
+
+div.bhoechie-tab-content{
+  background-color: #ffffff;
+  /* border: 1px solid #eeeeee; */
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+div.bhoechie-tab div.bhoechie-tab-content:not(.active){
+  display: none;
+}
+* {box-sizing: border-box}
+body {font-family: "Lato", sans-serif;}
+
+/* Style the tab */
+.tab {
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 30%;
+  height: 300px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 2px solid #ccc;
+  width: 70%;
+  border-left: none;
+  height: 100%;
+}
+#image-preview{
+    display:none;
+    width : 250px;
+    height : 300px;
+}
+</style>
+</head>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+@{
+  Layout = "_LayoutAdmin";
+}
+<body>
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Update Applicant</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Applicants / Update</a></li>
+      </ol>
+  </div>
+</div>
+<div class="container">
+	<div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu" style="border-radius: 15px;margin-left:20px;width:50px;position: fixed;">
+              <div class="list-group" style="width:120px;height:50px;">
+                <a class="list-group-item active text-center">
+                  <h4 class="fas fa-user"></h4><br/>Profile
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-archive"></h4><br/>Occupation
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-home"></h4><br/>Address
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-phone"></h4><br/>Emergency Contacts
+                </a>
+              </div>
+            </div>
+            @{
+          var update = ViewBag.update;
+          foreach(var i in update)
+          {
+            <form method="POST" id="form1" enctype="multipart/form-data" style="margin-top:0px;">
+              <div class="text-right" style="margin-left:400px;margin-right:20px;">
+                <button class="btn btn-info" id="save" asp-action="SaveEdit" asp-controller="Employees">Save</button>
+                <button class="btn btn-info" asp-action="ListEmployees" asp-controller="Employees" >Cancel</button>
+              </div><br>
+              <div class="bhoechie-tab" style="box-shadow: 0 0 2.5px 2px rgba(0, 0, 0, 0.18);margin-left: 170px;margin-right:20px;">
+                @* BAGIAN PERTAMA *@
+                <div class="bhoechie-tab-content active animated zoomInUp">
+                  <div class="container">
+                    <div class="row">
+                        <div class="col-5">
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Name</label>
+                            <input class="from-control" id="idUser" value="@i.Id" name="Id1" hidden>
+                            <input id="name" value="@i.Name" name="name1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Email</label>
+                            <input id="email" value="@i.Email" name="email1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Phone</label>
+                            <input id="phone" value="@i.Phone" name="phone1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Gender</label>
+                            <input id="gender1" value="@i.Gender" hidden>
+                            <label class="container">
+                            <input id="1" type="radio" name="radio1" value="Male">&nbsp&nbspMale
+                            <span class="checkmark"></span>
+                            </label>
+                            <label class="container">
+                              <input id="2" type="radio" name="radio1" value="Female">&nbsp&nbspFemale
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                          <br>
+                          @{
+                            var birthDate = @i.BirthDate.ToString("yyyy")+"-"+@i.BirthDate.ToString("MM")+"-"+@i.BirthDate.ToString("dd");
+                          }
+                          <div style="line-height: 80%;">
+                            <label>Birth Date</label>
+                            <input type="date" id="birthdate" name="birthdate1" value="@birthDate" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Birth Place</label>
+                            <input id="birthplace" value="@i.BirthPlace" name="birthplace1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br><br><br>
+                        </div>
+                        <div class="col-6 text-center" style="margin-left: 50px;">
+                          <br>
+                          <img id="preview-image" alt="image-preview" src="@i.Image" width="180px" height="250px" style="border: darkslategray;">
+                          <img id="image-preview" alt="image preview" width="70px" height="80px" style="border: darkslategray;"/>
+                          <br><br>
+                          <input type="file" id="image-source" onchange="previewImage();" name="image1" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN SATU *@
+                @* BAGIAN KEDUA *@
+                @* <div class="bhoechie-tab-content" style="width: 650px;margin-left:20px;"> *@
+                <div class="bhoechie-tab-content animated zoomInUp">
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                    <br><br>
+                    <label>Status</label><br>
+                    <input id="status1" name="status2" value="@i.Status" hidden>
+                    @if(@i.Status == "Unprocessed")
+                    {
+                      <select class="form-control bg-light border-1 small" id="status" name="status1" style="border-color: #3f51b5;width:600px;">
+                        <option value="Unprocessed" selected>Unprocessed</option>
+                        <option value="Scheduled to Psycho Test">Scheduled to Psycho Test</option>
+                        <option value="Scheduled to Interview">Scheduled to Interview</option>
+                      </select>
+                    }else if (@i.Status == "Scheduled to Psycho Test")
+                    {
+                      <select class="form-control bg-light border-1 small" id="status" name="status1" style="border-color: #3f51b5;width:600px;">
+                        <option value="Unprocessed">Unprocessed</option>
+                        <option value="Scheduled to Psycho Test" selected>Scheduled to Psycho Test</option>
+                        <option value="Scheduled to Interview">Scheduled to Interview</option>
+                      </select>
+                    }else
+                    {
+                      <select class="form-control bg-light border-1 small" id="status" name="status1" style="border-color: #3f51b5;width:600px;">
+                        <option value="Unprocessed">Unprocessed</option>
+                        <option value="Scheduled to Psycho Test">Scheduled to Psycho Test</option>
+                        <option value="Scheduled to Interview" selected>Scheduled to Interview</option>
+                      </select>
+                    }
+                    <br><br>
+                    </div>
+                    <div style="line-height: 80%;">
+                      <label>Position</label>
+                      <input id="position" name="position1" value="@i.Position" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;">
+                    </div>
+                    <br><br><br><br>
+                    <div style="line-height: 80%;">
+                      <label>Departement</label>
+                      <input id="departement" name="departement1" value="@i.Departement" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;">
+                    </div><br>
+                  </div>
+                  <br><br><br>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN KEDUA *@
+                @* BAGIAN KETIGA *@
+                <div class="bhoechie-tab-content animated zoomInUp">
+                  <br>
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                      <label>Address</label>
+                      <input id="address" name="address1" value="@i.Address" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;height:150px;">
+                    </div>
+                    <br><br><br><br><br><br><br>
+                  </div>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN KETIGA *@
+                @* BAGIAN KEEMPAT *@
+                <div class="bhoechie-tab-content animated zoomInUp">
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                      <br><br>
+                      <label>Emergency Contacts #1</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname1" name="personname11" value="@i.NameEmergencyContact1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone1" name="personphone11" value="@i.PhoneEmergencyContact1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <label>Emergency Contacts #2</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname2" name="personname21" value="@i.NameEmergencyContact2" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone2" name="personphone21" value="@i.PhoneEmergencyContact2" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <label>Emergency Contacts #3</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname3" name="personname31" value="@i.NameEmergencyContact3" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone3" name="personphone31" value="@i.PhoneEmergencyContact3" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br><br>
+                    </div>
+                    <br>
+                    <br>
+                    <br><br><br><br>
+                  </div>
+                  </div>
+                </div>
+                  <br><br><br><br>
+              </div>
+                  <br><br><br><br>
+
+            </form>
+          <br><br><br><br>          
+          }
+        }
+  </div>
+</div>
+</body>
+<script>
+  $(document).ready(function() {
+    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
+});
+</script>
+<script>
+  var gender = document.getElementById("gender1").value;
+  if(gender=="Male")
+  {
+    radiobtn = document.getElementById("1");
+    radiobtn.checked = true;
+  }
+  else if(gender=="Female")
+  {
+    radiobtn = document.getElementById("2");
+    radiobtn.checked = true;
+  }
+  function previewImage() {
+      document.getElementById("preview-image").style.display="none";
+      document.getElementById("image-preview").style.display = "block";
+      var oFReader = new FileReader();
+      oFReader.readAsDataURL(document.getElementById("image-source").files[0]);
+      oFReader.onload = function(oFREvent) {
+        document.getElementById("image-preview").src = oFREvent.target.result;
+      };
+  };
+     
+</script>

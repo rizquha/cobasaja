@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+</head>
+<body>
+@{
+    Layout="LayoutEmp";
+}
+<h1 class="text-center">Attendance</h1>
+<hr class="mb-4">
+@{
+    var loginuser = ViewBag.iduser;
+    <button class="btn btn-info text-right" onclick="location.href='/EmployeePresence/ClockIn?id=@loginuser'">Clock In</button>
+    <button class="btn btn-info text-right" onclick="location.href='/EmployeePresence/Clockout?id=@loginuser'">Clock Out</button>
+}
+<br>
+<br>
+<table id="customers">
+  <tr class="text-center">
+    <th width="30px">No</th>
+    <th>Date</th>
+    <th>Clock In</th>
+    <th>Clock Out</th>
+  </tr>
+  @{
+    var attendance = ViewBag.attendance;
+    int counter =0;
+    foreach(var i in attendance)
+    {
+      counter+=1;
+      var date = @i.PresenceIn.ToString("dddd, dd MMMM yyyy");
+      <tr>
+        <td class="text-center">@counter</td>
+        <td>@date</td>
+        <td>@i.PresenceIn.ToString("H:mm")</td>
+        <td>@i.PresenceOut.ToString("H:mm")</td>
+      </tr>
+    }
+  }
+</table>
+</body>
+</html>

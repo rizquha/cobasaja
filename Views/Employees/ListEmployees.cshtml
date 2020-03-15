@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+.pagination a {
+  color: black;
+  float: right;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+  background-color: cornflowerblue;
+  align-items: center;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+* {box-sizing: border-box}
+
+/* Set height of body and the document to 100% */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+/* Style tab links */
+.tablink {
+  background-color:#F0F0F0;
+  color: black;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 24%;
+  border: top radius 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+
+.tablink:hover {
+  background-color: #777;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: black;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-radius : 10px;
+  border-color: black;
+  border-width: 2px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+#Home {background-color: #FFFFFF;}
+#News {background-color: #FFFFFF;}
+#Contact {background-color: #FFFFFF;}
+#About {background-color: #FFFFFF;}
+</style>
+</head>
+@{
+    Layout="_LayoutAdmin";
+}
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Employees</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Employees</a></li>
+      </ol>
+  </div>
+</div>
+<div class="text-center">
+  <div class="container">
+    <div class="row">
+      <div class="col-9 text-right pull-right" text-center>
+        <form class="form-inline my-2 my-md-0" method="post" enctype="multipart/form-data" asp-action="Import" asp-controller="Employees">
+            <input class="form-control text-right" name="file" type="file" value="file" required />&nbsp
+            <button class="btn btn-info" style="margin-right: 0px;" type="submit" onclick="location.href='/Employees/Import'">Import</button>
+        </form> 
+      </div>
+      <div class="col-3 text-right">
+        <button type="button" class="btn btn-info" id="exportspecific" onclick="javascript:ExportCSV(this)">Export CSV</button>&nbsp&nbsp
+        @* <button type="button" class="btn btn-info" id="export" onclick="location.href='/Employees/NewEmployee'">Add</button> *@
+      </div>
+    </div>
+  </div>
+</div>
+<body>
+<br>
+
+<button class="tablink" style="margin-left:20px;" onclick="openPage('Home', this, 'white')" id="defaultOpen">All</button>
+<button class="tablink" onclick="openPage('News', this, 'white')" id="permanent">Permanent</button>
+<button class="tablink" onclick="openPage('Contact', this, 'white')" id="contract">Contract</button>
+<button class="tablink" style="width:23.5%;" onclick="openPage('About', this, 'white')" id="probation">Probation</button>
+
+<input value="@ViewBag.Message" id="status" hidden>
+<input value="@ViewBag.search" id="valsearch" hidden>
+
+<div id="Home" class="tabcontent">
+  <form class="navbar-search text-right" asp-controller="Employees" asp-action="ListEmployees">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="Home" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="Home" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+@{
+  var Employees = Model.Employee;
+  foreach(var i in Employees)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-5" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+              <small class="text-muted">@i.Status</small><br>
+            </div>
+            <div class="col-3 dropdown no-arrow text-center">
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/Employees/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/Employees/Edit?id=@i.Id" id="edit-@i.Id">Update</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+                  <a class="dropdown-item" href="/Employees/Warning?id=@i.Id" id="warning-@i.Id">Send Warning Message</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<div id="News" class="tabcontent">
+  <form class="navbar-search text-right">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="News" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="News" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var EmployeesPermanent = ViewBag.employeesPermanent;
+  foreach(var i in EmployeesPermanent)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-5" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3 dropdown no-arrow text-center">
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/Employees/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/Employees/Edit?id=@i.Id" id="edit-@i.Id">Update</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+                  <a class="dropdown-item" href="/Employees/Warning?id=@i.Id" id="warning-@i.Id">Send Warning Message</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<div id="Contact" class="tabcontent">
+  <form class="navbar-search text-right">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="Comtact" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="Contact" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var EmployeesContract = ViewBag.employeesContract;
+  foreach(var i in EmployeesContract)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-5" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3 dropdown no-arrow text-center">
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/Employees/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/Employees/Edit?id=@i.Id" id="edit-@i.Id">Update</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+                  <a class="dropdown-item" href="/Employees/Warning?id=@i.Id" id="warning-@i.Id">Send Warning Message</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+
+<div id="About" class="tabcontent">
+  <form class="navbar-search text-right">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="About" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="About" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var EmployeesProbation = ViewBag.employeesProbation;
+  foreach(var i in EmployeesProbation)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-5" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3 dropdown no-arrow text-center">
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/Employees/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/Employees/Edit?id=@i.Id" id="edit-@i.Id">Update</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+                  <a class="dropdown-item" href="/Employees/Warning?id=@i.Id" id="warning-@i.Id">Send Warning Message</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<br><br>
+<div class="text-xs-center">
+@{
+    var pages = ViewBag.PerPage;
+    var search = ViewBag.search;
+    var val =ViewBag.Message;
+    @if (Model.Pager.EndPage > 1)
+        {
+            <ul class="pagination" style="margin-left: 35%;">
+                @if (Model.Pager.CurrentPage > 1)
+                {
+                        <li class="text-center">
+                        <a class="text-center" href="~/Employees/ListEmployees">First</a>
+                        </li>
+                        <li class="text-center">
+                            <a href="~/Employees/ListEmployees?page=@(Model.Pager.CurrentPage - 1)&PerPage=@pages&search=@search&val=@val">Previous</a>
+                        </li>
+                }
+                @for (var halaman = Model.Pager.StartPage; halaman <= Model.Pager.EndPage; halaman++)
+                {
+                    
+                        <li class="@(halaman == Model.Pager.CurrentPage ? "active" : "") pull-center">
+                        <a href="~/Employees/ListEmployees?page=@halaman&PerPage=@pages&search=@search&val=@val">@halaman</a>
+                        </li>
+                }
+
+                @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                {
+                        <li>
+                        <a href="~/Employees/ListEmployees?page=@(Model.Pager.CurrentPage + 1)&PerPage=@pages&search=@search&val=@val">Next</a>
+                        </li>
+                        <li>
+                            <a href="~/Employees/ListEmployees?page=@(Model.Pager.TotalPages)&PerPage=@pages&search=@search&val=@val">Last</a>
+                        </li>
+                }
+            </ul>
+        }
+    }
+</div>
+<script>
+  function Delete(btn)
+  {
+    var id = btn.id;
+    id = id.substring(7,id.length);
+    console.log("DELETE");
+    location.href='/Employees/Delete?id='+id;
+  }
+  function SearchButton(btn)
+  {
+    var id= btn.id;
+    var val = document.getElementById(id).value;
+    var input = document.getElementById("searchInput").value;
+    location.href='/Employees/ListEmployees?val='+val+'&search='+input;    
+  }
+  function openPage(pageName,elmnt,color) {
+    document.getElementById("status").value=pageName;
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].style.backgroundColor = "";
+    }
+    document.getElementById(pageName).style.display = "block";
+    elmnt.style.backgroundColor = color;
+  }
+
+  var status = document.getElementById("status").value;
+  if(status=="News")
+  {
+    document.getElementById("permanent").click();
+  }else if(status=="Contact")
+  {
+    document.getElementById("contract").click();
+  }else if(status=="About")
+  {
+    document.getElementById("probation").click();
+  }
+  else
+  {
+  document.getElementById("defaultOpen").click();
+  }
+
+  function ExportCSV(btn)
+  {
+    var val = document.getElementById("status").value;
+    var valsearch = document.getElementById("valsearch").value;    
+    location.href='/Employees/ExportCSV?val='+val+'&search='+valsearch;  
+  }
+</script>
+</body>
+</html> 

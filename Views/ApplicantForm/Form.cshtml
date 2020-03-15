@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  div.bhoechie-tab-container{
+  z-index: 10;
+  background-color: #ffffff;
+  padding: 0 !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  border:1px solid #ddd;
+  margin-top: 20px;
+  margin-left: 50px;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  background-clip: padding-box;
+  opacity: 0.97;
+  filter: alpha(opacity=97);
+}
+div.bhoechie-tab-menu{
+  padding-right: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group{
+  margin-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group>a{
+  margin-bottom: 0;
+}
+div.bhoechie-tab-menu div.list-group>a .glyphicon,
+div.bhoechie-tab-menu div.list-group>a .fa {
+  color: #5A55A3;
+}
+div.bhoechie-tab-menu div.list-group>a:first-child{
+  border-top-right-radius: 0;
+  -moz-border-top-right-radius: 0;
+}
+div.bhoechie-tab-menu div.list-group>a:last-child{
+  border-bottom-right-radius: 0;
+  -moz-border-bottom-right-radius: 0;
+}
+div.bhoechie-tab-menu div.list-group>a.active,
+div.bhoechie-tab-menu div.list-group>a.active .glyphicon,
+div.bhoechie-tab-menu div.list-group>a.active .fa{
+  background-color: #5A55A3;
+  background-image: #5A55A3;
+  color: #ffffff;
+}
+div.bhoechie-tab-menu div.list-group>a.active:after{
+  content: '';
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-top: -13px;
+  border-left: 0;
+  border-bottom: 13px solid transparent;
+  border-top: 13px solid transparent;
+  border-left: 10px solid #5A55A3;
+}
+
+div.bhoechie-tab-content{
+  background-color: #ffffff;
+  /* border: 1px solid #eeeeee; */
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+div.bhoechie-tab div.bhoechie-tab-content:not(.active){
+  display: none;
+}
+* {box-sizing: border-box}
+body {font-family: "Lato", sans-serif;}
+
+/* Style the tab */
+.tab {
+  float: left;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 30%;
+  height: 300px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  display: block;
+  background-color: inherit;
+  color: black;
+  padding: 22px 16px;
+  width: 100%;
+  border: none;
+  outline: none;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  float: left;
+  padding: 0px 12px;
+  border: 2px solid #ccc;
+  width: 70%;
+  border-left: none;
+  height: 100%;
+}
+#image-preview{
+    display:none;
+    width : 250px;
+    height : 300px;
+}
+</style>
+</head>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+@{
+  Layout = "LayoutApplicant";
+}
+<body>
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">New Applicants</h1>
+  </div>
+</div>
+<div class="container">
+	<div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu" style="border-radius: 15px;margin-left:20px;width:50px;position: fixed;">
+              <div class="list-group" style="width:120px;height:50px;">
+                <a class="list-group-item active text-center">
+                  <h4 class="fas fa-user"></h4><br/>Profile
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-archive"></h4><br/>Occupation
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-home"></h4><br/>Address
+                </a>
+                <a class="list-group-item text-center">
+                  <h4 class="fas fa-phone"></h4><br/>Emergency Contacts
+                </a>
+              </div>
+            </div>
+            <form method="POST" id="form1" enctype="multipart/form-data" style="margin-top:0px;">
+              <div class="text-right" style="margin-left:400px;margin-right:20px;">
+                <button class="btn btn-info" id="save" asp-action="Save" asp-controller="ApplicantForm">Send</button>
+              </div><br>
+              <div class="bhoechie-tab" style="box-shadow: 0 0 2.5px 2px rgba(0, 0, 0, 0.18);margin-left: 170px;margin-right:20px;">
+                @* BAGIAN PERTAMA *@
+                <div class="bhoechie-tab-content active">
+                  <div class="container">
+                    <div class="row">
+                        <div class="col-5">
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Name</label>
+                            <input id="name" placeholder="  Udin" name="name1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Email</label>
+                            <input id="email" placeholder="  oke@gmail.com" name="email1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Phone</label>
+                            <input id="phone" placeholder="  08xxxxxxxxxx" name="phone1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Gender</label>
+                            <label class="container">
+                            <input id="1" type="radio" name="radio1" checked="checked" value="Male">&nbsp&nbspMale
+                            <span class="checkmark"></span>
+                            </label>
+                            <label class="container">
+                              <input id="2" type="radio" name="radio1" value="Female">&nbsp&nbspFemale
+                              <span class="checkmark"></span>
+                            </label>
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Birth Date</label>
+                            <input type="date" id="birthdate" name="birthdate1" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Birth Place</label>
+                            <input id="birthplace" placeholder="Yogyakarta" name="birthplace1" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br><br><br>
+                        </div>
+                        <div class="col-6 text-center" style="margin-left: 50px;">
+                          <br>
+                          <div style="line-height: 80%;" class="text-center">
+                            <label>Image</label>
+                            <img id="image-preview" alt="image preview" width="180px" height="250px" style="border: darkslategray;"/>
+                            <br>
+                            <input type="file" id="image-source" onchange="previewImage();" name="image1" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                          <br>
+                          <div style="line-height: 80%;">
+                            <label>Curriculum Vitae</label>
+                            <br>
+                            <input type="file" id="cv" onchange="previewImage();" name="cv1" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN SATU *@
+                @* BAGIAN KEDUA *@
+                <div class="bhoechie-tab-content">
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                    <br><br>
+                    <label>Status</label><br>
+                    <select class="form-control bg-light border-1 small" id="status" name="status1" style="border-color: #3f51b5;width:600px;">
+                      <option value="Contract" selected>Contract</option>
+                      <option value="Permanent">Permanent</option>
+                      <option value="Probation">Probation</option>
+                    </select>
+                    <br><br>
+                    </div>
+                    <div style="line-height: 80%;">
+                      <label>Position</label>
+                      <input id="position" placeholder="  System Developer" name="position1" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;">
+                    </div>
+                    <br><br><br><br>
+                    <div style="line-height: 80%;">
+                      <label>Departement</label>
+                      <input id="departement" placeholder="  SPO" name="departement1" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;">
+                    </div><br>
+                  </div>
+                  <br><br><br>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN KEDUA *@
+                @* BAGIAN KETIGA *@
+                <div class="bhoechie-tab-content">
+                  <br>
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                      <label>Address</label>
+                      <input id="address" name="address1" placeholder=" Jl.Pogung Baru Blok A4" type="text" class="form-control bg-light border-1 small"
+                      aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:600px;height:150px;">
+                    </div>
+                    <br><br><br><br><br><br><br>
+                  </div>
+                  </div>
+                </div>
+                @* TERAKHIR BAGIAN KETIGA *@
+                @* BAGIAN KEEMPAT *@
+                <div class="bhoechie-tab-content">
+                  <div class="container">
+                  <div class="row">
+                    <div style="line-height: 80%;">
+                      <br><br>
+                      <label>Emergency Contacts #1</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname1" name="personname11" placeholder="  Uha" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone1" name="personphone11" placeholder="  08xxxxxxxxxx" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <label>Emergency Contacts #2</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname2" name="personname21" placeholder="  Rizquha" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone2" name="personphone21" placeholder="  08xxxxxxxxxx" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <label>Emergency Contacts #3</label>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-5 text-left">
+                            <input id="personname3" name="personname31" placeholder="  Maulida" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                          <div class="col-5">
+                            <input id="personphone3" name="personphone31" placeholder="  08xxxxxxxxxx" type="text" class="form-control bg-light border-1 small"
+                            aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;width:250px;">
+                          </div>
+                        </div>
+                      </div>
+                      <br><br>
+                    </div>
+                    <br>
+                    <br>
+                    <br><br><br><br>
+                  </div>
+                  </div>
+                </div>
+                  <br><br><br><br>
+              </div>
+                  <br><br><br><br>
+
+            </form>
+          <br><br><br><br>          
+  </div>
+</div>
+</body>
+<script>
+  $(document).ready(function() {
+    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+        e.preventDefault();
+        $(this).siblings('a.active').removeClass("active");
+        $(this).addClass("active");
+        var index = $(this).index();
+        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+    });
+});
+</script>
+<script>
+function previewImage() {
+    document.getElementById("image-preview").style.display = "block";
+    var oFReader = new FileReader();
+     oFReader.readAsDataURL(document.getElementById("image-source").files[0]);
+    oFReader.onload = function(oFREvent) {
+      document.getElementById("image-preview").src = oFREvent.target.result;
+    };
+};
+</script>

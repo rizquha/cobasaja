@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#customers {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+</style>
+</head>
+<body>
+@{
+    Layout="LayoutEmp";
+}
+<h1 class="text-center">Leave Request</h1>
+<hr class="mb-4">
+<br><br>
+<br>
+<button class="btn btn-info" id="add" asp-action="AddLeaveRequest" asp-controller="EmployeePresence" onclick="location.href='/EmployeePresence/AddLeaveRequest'">Add Leave Request</button>
+<br><br>
+<table id="customers">
+  <tr class="text-center">
+    <th width="30px">No</th>
+    <th>Leave Date</th>
+    <th>Status</th>
+  </tr>
+  @{
+    var LeaveReq = ViewBag.req;
+    int counter =0;
+    foreach(var i in LeaveReq)
+    {
+      counter+=1;
+      var date = @i.LeaveDate.ToString("dddd, dd MMMM yyyy");
+      <tr>
+        <td class="text-center">@counter</td>
+        <td onclick="location.href='/EmployeePresence/Edit?id=@i.Id'">@date</td>
+        <td>@i.Status</td>
+      </tr>
+    }
+  }
+</table>
+</body>
+</html>

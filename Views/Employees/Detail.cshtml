@@ -1,0 +1,179 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<!------ Include the above in your HEAD tag ---------->
+<style>
+    body{
+		background: linear-gradient(90deg, #e8e8e8 50%, #3d009e 50%);
+	}
+	.portfolio{
+		padding:6%;
+		text-align:center;
+	}
+	.heading{
+		background: #fff;
+		padding: 1%;
+		text-align: left;
+		box-shadow: 0px 0px 4px 0px #545b62;
+	}
+	.heading img{
+		width: 10%;
+	}
+	.bio-info{
+		padding: 5%;
+		background:#fff;
+		box-shadow: 0px 0px 4px 0px #b0b3b7;
+	}
+	.name{
+		font-family: 'Charmonman', cursive;
+		font-weight:600;
+	}
+	.bio-image{
+		text-align:center;
+	}
+	.bio-image img{
+		border-radius:50%;
+	}
+	.bio-content{
+		text-align:left;
+	}
+	.bio-content p{
+		font-weight:600;
+		font-size:30px;
+	}
+    .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.show {display: block;}
+</style>
+@{
+    Layout="_LayoutAdmin";
+}
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Employees</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Employees / Detail</a></li>
+      </ol>
+  </div>
+</div>
+@{
+var details = ViewBag.details;
+foreach(var i in details)
+{
+<div class="container portfolio">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="heading" data-toggle="collapse" data-target="#profile" aria-expanded="true"
+            aria-controls="collapsePage">	
+                <img src="https://image.ibb.co/cbCMvA/logo.png" />
+                <label class="text-right"><b>Profile</b></label>
+			</div>
+		</div>	
+	</div>
+    <div class="row">
+		<div class="col-md-12">
+			<div class="heading" data-toggle="collapse" data-target="#occupation" aria-expanded="true"
+            aria-controls="collapsePage">	
+                <img src="https://image.ibb.co/cbCMvA/logo.png" />
+                <label class="text-right"><b>Occupation</b></label>
+			</div>
+		</div>	
+	</div>
+    <div class="row">
+		<div class="col-md-12">
+			<div class="heading" data-toggle="collapse" data-target="#emergency" aria-expanded="true"
+            aria-controls="collapsePage">	
+                <img src="https://image.ibb.co/cbCMvA/logo.png" />
+                <label class="text-right"><b>Emergency Contacts</b></label>
+			</div>
+		</div>	
+	</div>
+	<div class="bio-info collapse" id="profile" aria-labelledby="headingPage" data-parent="#accordionSidebar">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="bio-image">
+							<img src="@i.Image " style="border-radius:50%;width:250px;height:300px;" alt="image" />
+						</div>			
+					</div>
+				</div>	
+			</div>
+			<div class="col-md-6">
+				<div class="bio-content">
+					<h1>Hi there, I'm @i.Name</h1>
+					<h6>Email : @i.Email</h6>
+					<h6>Gender : @i.Gender</h6>
+					<h6>Phone : @i.Phone</h6>
+					<h6>Birth  Date : @i.BirthDate.ToString("dd MMMM yyyy")</h6>
+					<h6>Birth Place : @i.BirthPlace</h6>
+				</div>
+			</div>
+		</div>	
+	</div>
+    <div class="bio-info collapse" id="occupation" aria-labelledby="headingPage" data-parent="#accordionSidebar">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="bio-image">
+							<img src="@i.Image" style="border-radius:50%;width:250px;height:300px;" alt="image" />
+						</div>			
+					</div>
+				</div>	
+			</div>
+			<div class="col-md-6">
+				<div class="bio-content">
+                    <h1>Hi there, I'm @i.Name</h1>
+					<h6>Position : @i.Position</h6>
+					<h6>Departement : @i.Departement</h6>
+					<h6>Status : @i.Status</h6>
+					<h6>Address : @i.Address</h6>
+				</div>
+			</div>
+		</div>	
+	</div>
+    <div class="bio-info collapse" id="emergency" aria-labelledby="headingPage" data-parent="#accordionSidebar">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="bio-image">
+							<img src="@i.Image" style="border-radius:50%;width:250px;height:300px;" alt="image" />
+						</div>			
+					</div>
+				</div>	
+			</div>
+			<div class="col-md-6">
+				<div class="bio-content">
+                    <h1>Hi there, I'm Rizquha Maulida</h1>
+                    <h5>Emergency Contact #1</h5>
+					<h6>&nbsp&nbsp&nbspName : @i.NameEmergencyContact1</h6>
+					<h6>&nbsp&nbsp&nbspNo HP : @i.PhoneEmergencyContact1</h6>
+                    <h5>Emergency Contact #2</h5>
+					<h6>&nbsp&nbsp&nbspName : @i.NameEmergencyContact2</h6>
+					<h6>&nbsp&nbsp&nbspNo HP : @i.PhoneEmergencyContact2</h6>
+                    <h5>Emergency Contact #3</h5>
+					<h6>&nbsp&nbsp&nbspName : @i.NameEmergencyContact3</h6>
+					<h6>&nbsp&nbsp&nbspNo HP : @i.PhoneEmergencyContact3</h6>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>
+}
+}

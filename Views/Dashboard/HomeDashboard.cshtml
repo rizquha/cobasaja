@@ -1,0 +1,117 @@
+<style>
+* {box-sizing: border-box}
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+@{
+    Layout="_LayoutAdmin";
+}
+        <!-- Container Fluid-->
+        <div class="container-fluid" id="container-wrapper">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a>Home</a></li>
+              <li class="breadcrumb-item active" href="/Dashboard/HomeDashboard">Dashboard</li>
+            </ol>
+          </div>
+        @{
+            var count = ViewBag.EmpCount;
+            var countMale = ViewBag.countMale;
+            var countFemale = count-countMale;
+            var attendanceTotal = ViewBag.attendanceTotal;
+            var totalLeave = ViewBag.countLeave;
+            var events = ViewBag.events;
+            var newapplicant = ViewBag.newApplicants;
+        }
+        <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="font-weight-bold text-light text-center" style="text-align: center;">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspTotal Employees</h6>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><b>@count</b></h1>
+                    <small class="text-muted">@countMale Males / @countFemale Females</small>
+                </div>
+            </div>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-light">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspOut Today</h6>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><b>@totalLeave</b></h1>
+                    <small class="text-muted">People</small>
+                </div>
+            </div>
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-light">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspToday's Present</h6>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title"><b>@attendanceTotal/@count</b></h1>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-light">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspUpcoming Events</h6>
+                </div>
+                <div class="card-body">
+                    <table>
+                        @foreach (var item in events)
+                        {
+                            <tr>
+                                <td class="text-center"><img src="https://image.flaticon.com/icons/svg/747/747310.svg" width="20px" height="20px"></td>
+                                <td>@item.eventDate.ToString("dddd, dd MMMM yyyy")</td>
+                                <td>@item.eventName</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="container">
+        <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 shadow-sm">
+                <div class="card-header py-4 bg-primary d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-light">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspNew Applicants</h6>
+                </div>
+                <div class="card-body">
+                    <table>
+                        @foreach (var item in newapplicant)
+                        {
+                            <tr>
+                                <td class="text-center"><img src="https://image.flaticon.com/icons/svg/747/747376.svg" width="20px" height="20px"></td>
+                                <td>@item.Name</td>
+                                <td>@item.Position</td>
+                                <td>@item.CreatedAt.ToString("dddd, dd MMMM yyyy")</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>

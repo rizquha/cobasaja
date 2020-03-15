@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+@* <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> *@
+
+<style>
+.pagination a {
+  color: black;
+  float: right;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+  background-color: cornflowerblue;
+  align-items: center;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+* {box-sizing: border-box}
+
+/* Set height of body and the document to 100% */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+
+/* Style tab links */
+.tablink {
+  background-color:#F0F0F0;
+  color: black;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 24%;
+  border: top radius 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+
+.tablink:hover {
+  background-color: #777;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+  color: black;
+  display: none;
+  padding: 100px 20px;
+  height: 100%;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-radius : 10px;
+  border-color: black;
+  border-width: 2px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+#Home {background-color: #FFFFFF;}
+#News {background-color: #FFFFFF;}
+#Contact {background-color: #FFFFFF;}
+#About {background-color: #FFFFFF;}
+</style>
+</head>
+@{
+    Layout="_LayoutAdmin";
+}
+<div class="container-fluid" id="container-wrapper">
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Leave Request</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a>Home / Leave Request</a></li>
+      </ol>
+  </div>
+</div>
+<div class="text-right" style="margin-right: 20px;">
+    <button type="button" class="btn btn-info" id="export" onclick="location.href='/LeaveRequest/Export'">Export CSV(All)</button>
+    <button type="button" class="btn btn-info" id="exportspecific" onclick="javascript:ExportCSV(this)">Export CSV</button>&nbsp&nbsp
+</div>
+<body>
+<br>
+
+<button class="tablink" style="margin-left:20px;" onclick="openPage('Home', this, 'white')" id="defaultOpen">All</button>
+<button class="tablink" onclick="openPage('News', this, 'white')" id="pending">Pending</button>
+<button class="tablink" onclick="openPage('Contact', this, 'white')" id="approved">Approved</button>
+<button class="tablink" style="width:23.5%;" onclick="openPage('About', this, 'white')" id="rejected">Rejected</button>
+
+<input value="@ViewBag.Message" id="status" hidden>
+<input value="@ViewBag.search" id="valsearch" hidden>
+
+<div id="Home" class="tabcontent">
+  <form class="navbar-search text-right" asp-controller="LeaveRequest" asp-action="ListLeaveRequest">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="Home" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="Home" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+@{
+  var leaverequest = Model.LeaveRequests;
+  foreach(var i in leaverequest)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <div class="text-center">
+                <small style="font-style:bold;font-size:13px;">Leave at @i.LeaveDate.ToString("dd MMMM yyyy")</small><br>
+                <a class="btn btn-primary btn-sm text-center" type="button" style="border-radius:15px;color:white;"><small style="color:white;">@i.Status</small></a><br>
+              </div>
+            </div>
+            <div class="col-1 dropdown no-arrow text-right">
+              <br>
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/LeaveRequest/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Approved?id=@i.Id" id="aproved-@i.Id">Approved</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Rejected?id=@i.Id" id="rejected-@i.Id">Rejected</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<div id="News" class="tabcontent">
+  <form class="navbar-search text-right" asp-controller="LeaveRequest" asp-action="ListLeaveRequest">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="News" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="News" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var leaverequestpending = ViewBag.leaverequestpending;
+  foreach(var i in leaverequestpending)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <div class="text-center">
+                <small style="font-style:bold;font-size:13px;">Leave at @i.LeaveDate.ToString("dd MMMM yyyy")</small><br>
+                <a class="btn btn-primary btn-sm text-center" type="button" style="border-radius:15px;color:white;"><small style="color:white;">@i.Status</small></a><br>
+              </div>
+            </div>
+            <div class="col-1 dropdown no-arrow text-right">
+              <br>
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/LeaveRequest/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Approved?id=@i.Id" id="aproved-@i.Id">Approved</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Rejected?id=@i.Id" id="rejected-@i.Id">Rejected</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<div id="Contact" class="tabcontent">
+  <form class="navbar-search text-right" asp-controller="LeaveRequest" asp-action="ListLeaveRequest">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="Contact" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="Contact" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var leaverequestapproved = ViewBag.leaverequestapproved;
+  foreach(var i in leaverequestapproved)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <div class="text-center">
+                <small style="font-style:bold;font-size:13px;">Leave at @i.LeaveDate.ToString("dd MMMM yyyy")</small><br>
+                <a class="btn btn-primary btn-sm text-center" type="button" style="border-radius:15px;color:white;"><small style="color:white;">@i.Status</small></a><br>
+              </div>
+            </div>
+            <div class="col-1 dropdown no-arrow text-right">
+              <br>
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/LeaveRequest/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Approved?id=@i.Id" id="aproved-@i.Id">Approved</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Rejected?id=@i.Id" id="rejected-@i.Id">Rejected</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+
+<div id="About" class="tabcontent">
+  <form class="navbar-search text-right" asp-controller="LeaveRequest" asp-action="ListLeaveRequest">
+    <div class="container">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-7 text-right">
+        <input name="val" value="About" hidden>
+        <input id="searchInput" name="search" type="text" class="form-control bg-light border-1 small" placeholder="What do you want to look for?"
+          aria-label="Search" aria-describedby="basic-addon2" style="border-color: #3f51b5;">
+        </div>
+        <div class="col-1">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchbutton" value="About" onclick="javascript:SearchButton(this)">
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+        </div>
+        </div>
+    </div>
+  </form>
+  <br>
+  @{
+  var leaverequestrejected = ViewBag.leaverequestrejected;
+  foreach(var i in leaverequestrejected)
+  {
+      <div class="container">
+        <div class="row">
+            <div class="col-1 text-left">
+              <img style="border-radius:50%;" src="@i.Image" width="50px" height="50px">
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Name</medium><br>
+              <small class="text-muted">@i.Email</small><br>
+              <small class="text-muted">@i.Phone</small>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <medium style="font-style:bold;">@i.Departement</medium><br>
+              <small class="text-muted">@i.Position</small><br>
+            </div>
+            <div class="col-3" style="line-height: normal;">
+              <div class="text-center">
+                <small style="font-style:bold;font-size:13px;">Leave at @i.LeaveDate.ToString("dd MMMM yyyy")</small><br>
+                <a class="btn btn-primary btn-sm text-center" type="button" style="border-radius:15px;color:white;"><small style="color:white;">@i.Status</small></a><br>
+              </div>
+            </div>
+            <div class="col-1 dropdown no-arrow text-right">
+              <br>
+              <a class="dropdown-toggle " id="dropdownMenuLink"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Take Action</div>
+                  <a class="dropdown-item" href="/LeaveRequest/Detail?id=@i.Id" id="detail-@i.Id">Detail</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Approved?id=@i.Id" id="aproved-@i.Id">Approved</a>
+                  <a class="dropdown-item" href="/LeaveRequest/Rejected?id=@i.Id" id="rejected-@i.Id">Rejected</a>
+                  <a class="dropdown-item" onclick="javascript:Delete(this)" id="delete-@i.Id">Delete</a>
+              </div>
+            </div>
+        </div>
+      </div>
+      <hr class="mb-4">
+  }
+}
+</div>
+<br><br>
+@{
+    var pages = ViewBag.PerPage;
+    var search = ViewBag.search;
+    var val =ViewBag.Message;
+
+    @if (Model.Pager.EndPage > 1)
+        {
+            <ul class="pagination" style="margin-left: 35%;">
+                @if (Model.Pager.CurrentPage > 1)
+                {
+                        <li>
+                        <a href="~/LeaveRequest/ListLeaveRequest">First</a>
+                        </li>
+                        <li>
+                            <a href="~/LeaveRequest/ListLeaveRequest?page=@(Model.Pager.CurrentPage - 1)&PerPage=@pages&search=@search&val=@val">Previous</a>
+                        </li>
+                }
+                @for (var halaman = Model.Pager.StartPage; halaman <= Model.Pager.EndPage; halaman++)
+                {
+                    
+                        <li class="@(halaman == Model.Pager.CurrentPage ? "active" : "")">
+                        <a href="~/LeaveRequest/ListLeaveRequest?page=@halaman&PerPage=@pages&search=@search&val=@val">@halaman</a>
+                        </li>
+                }
+
+                @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                {
+                        <li>
+                        <a href="~/LeaveRequest/ListLeaveRequest?page=@(Model.Pager.CurrentPage + 1)&PerPage=@pages&search=@search&val=@val">Next</a>
+                        </li>
+                        <li>
+                            <a href="~/LeaveRequest/ListLeaveRequest?page=@(Model.Pager.TotalPages)&PerPage=@pages&search=@search&val=@val">Last</a>
+                        </li>
+                }
+            </ul>
+        }
+    }
+
+<script>
+  function Delete(btn)
+  {
+    var id = btn.id;
+    id = id.substring(7,id.length);
+    console.log("DELETE");
+    location.href='/LeaveRequest/Delete?id='+id;
+  }
+  function SearchButton(btn)
+  {
+    var id= btn.id;
+    var val = document.getElementById(id).value;
+    var input = document.getElementById("searchInput").value;
+    location.href='/LeaveRequest/ListLeaveRequest?val='+val+'&search='+input;    
+  }
+  function openPage(pageName,elmnt,color) {
+    document.getElementById("status").value=pageName;
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].style.backgroundColor = "";
+    }
+    document.getElementById(pageName).style.display = "block";
+    elmnt.style.backgroundColor = color;
+  }
+
+  var status = document.getElementById("status").value;
+  if(status=="News")
+  {
+    document.getElementById("pending").click();
+  }else if(status=="Contact")
+  {
+    document.getElementById("approved").click();
+  }else if(status=="About")
+  {
+    document.getElementById("rejected").click();
+  }
+  else
+  {
+  document.getElementById("defaultOpen").click();
+  }
+
+  function ExportCSV(btn)
+  {
+    var val = document.getElementById("status").value;
+    var valsearch = document.getElementById("valsearch").value;    
+    location.href='/LeaveRequest/ExportCSV?val='+val+'&search='+valsearch;  
+  }
+</script>
+</body>
+</html> 
